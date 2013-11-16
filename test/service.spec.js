@@ -1,11 +1,18 @@
 var request = require('request');
 var assert = require('assert');
 var mongoose = require('mongoose');
+var georeport = require('../src/georeport');
 var Service = require('../src/models/Service');
 var services = require('../test/data/services.js');
 
 // Connecting to a local test database or creating it on the fly
 mongoose.connect('mongodb://localhost/georeport_test');
+
+var options = {
+    port: 3000
+};
+
+var server = new georeport(options).listen();
 
 describe('Service REST interface', function() {
 
@@ -31,7 +38,7 @@ describe('Service REST interface', function() {
     describe('GET /services', function() {
         it('should give a list of available services as array', function(done) {
             request.get({
-                url: 'http://localhost:3000/services',
+                url: 'http://localhost:' + options.port + '/services',
                 json: true
             }, function(error, response, body) {
                 console.log(body)
