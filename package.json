@@ -1,0 +1,25 @@
+{
+  "name": "georeport",
+  "version": "0.1.2",
+  "description": "A Node.js georeport v2 server based on express.",
+  "main": "src/georeport.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "open311",
+    "georeport",
+    "server",
+    "express"
+  ],
+  "author": "Steffen Tröster",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~3.4.4",
+    "mongoose": "~3.8.0",
+    "request": "~2.27.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.14.0"
+  }
+}
