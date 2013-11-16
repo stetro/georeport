@@ -1,29 +1,36 @@
 var express = require('express');
+var ServiceController = require('./ServiceController');
+var RequestController = require('./RequestController');
 var __ = require('lodash');
 
 
 var GeoReport = module.exports = function(options) {
-
+    var self = this;
+    
+    var defaults = {
+        port: 3000,
+        accesspoint: '/'
+    };
 
     if (__.isObject(options)) {
-        __.extend(this, options);
-    } else {
-        this.port = 3000;
+        __.extend(defaults, options);
     }
-    this.server = express();
-    this.server.use(express.bodyParser());
-    this.server.get('/services', function(req, res) {
-        res.json([1]);
-    });
 
-    this.listen = function() {
-        this.server.listen(this.port);
-        console.log("Server is running ... localhost:8080");
+    self.server = express();
+    self.server.use(express.bodyParser());
+
+    ServiceController(self.server, defaults)
+    RequestController(self.server, defaults)
+
+    self.run = function() {
+        self.server.listen(defaults.port);
+        console.log('Server is running ... localhost:' + defaults.port);
     };
 };
+
 if (require.main === module) {
     var server = new GeoReport({
         port: 3000
     });
-    server.listen();
+    server.run();
 }
