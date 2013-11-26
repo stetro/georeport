@@ -44,7 +44,7 @@ describe('Software Quality Assurance', function() {
 	});
 	describe('Developer base', function(done) {
 		it('should have at least one subscriber and stargazers', function(done) {
-			georeportRepo.info(function(er, data) {
+			georeportRepo.info(function(error, data) {
 				if (error) {
 					throw error;
 				}
