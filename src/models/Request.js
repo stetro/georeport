@@ -6,7 +6,8 @@ var RequestSchema = new Schema({
     service_request_id: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        default: Date.now
     },
     service_code: {
         type: String,
@@ -16,7 +17,7 @@ var RequestSchema = new Schema({
         type: String,
         required: true
     },
-    long: {
+    lng: {
         type: String,
         required: true
     },
@@ -26,11 +27,11 @@ var RequestSchema = new Schema({
     },
     device_id: {
         type: String,
-        required: true
+        required: false
     },
     account_id: {
         type: String,
-        required: true
+        required: false
     },
     first_name: {
         type: String,

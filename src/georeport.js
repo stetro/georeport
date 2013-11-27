@@ -26,6 +26,8 @@ var GeoReport = module.exports = function(options) {
     ServiceController(self.app, defaults)
     RequestController(self.app, defaults)
 
+    self.app.use(express.static(__dirname+"/../../reportamoose/phone/app/"));
+
     self.run = function() {
         self.server = require('http').createServer(self.app);
         self.server.listen(defaults.port);
