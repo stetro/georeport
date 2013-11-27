@@ -2,6 +2,15 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Service = require('../models/Service');
 
+
+function checkServiceCodeOfServices(val, done) {
+    Service.find({
+        _id: val
+    }, function(error, items) {
+        done(!error);
+    });
+};
+
 var RequestSchema = new Schema({
     service_code: {
         type: String,
@@ -52,6 +61,8 @@ var RequestSchema = new Schema({
         default: Date.now
     }
 });
+
+RequestSchema.path('service_code').validate(checkServiceCodeOfServices, 'service_code invalide');
 
 var service_request_id = RequestSchema.virtual('service_request_id');
 

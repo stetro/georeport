@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Request = require('../src/models/Request');
+var Service = require('../src/models/Service');
 
 /*
 GET		/requests 		index

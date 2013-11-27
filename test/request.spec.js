@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var georeport = require('../src/georeport');
 var Request = require('../src/models/Request');
 var requests = require('../test/data/requests.js');
+var Service = require('../src/models/Service');
+var services = require('../test/data/services.js');
 var __ = require('lodash');
 
 
@@ -20,27 +22,50 @@ describe('Request REST interface', function() {
 
     after(function(done) {
         Request.remove(function(err) {
-            mongoose.connection.close();
-            server.close(done);
+            Service.remove(function(err) {
+                mongoose.connection.close();
+                server.close(done);
+            });
         });
     });
 
     beforeEach(function(done) {
-        var total = requests.array.length;
-        var array = __.cloneDeep(requests.array)
-        var result = [];
-        var saveAll = function() {
-            var doc = array.pop();
-            doc = new Request(doc);
-            doc.save(function(err, saved) {
-                if (err) throw err;
-                if (--total) saveAll();
-                else done();
-            })
+        function saveServices() {
+            var total = services.array.length;
+            var array = __.cloneDeep(services.array)
+            var result = [];
+            var saveAll = function() {
+                var doc = array.pop();
+                doc = new Service(doc);
+                doc.save(function(err, saved) {
+                    if (err) throw err;
+                    if (--total) saveAll();
+                    else saveRequests();
+                })
+            };
+            Service.find().remove({}, function() {
+                saveAll();
+            });
+        }
+
+        function saveRequests() {
+            var total = requests.array.length;
+            var array = __.cloneDeep(requests.array)
+            var result = [];
+            var saveAll = function() {
+                var doc = array.pop();
+                doc = new Request(doc);
+                doc.save(function(err, saved) {
+                    if (err) throw err;
+                    if (--total) saveAll();
+                    else done();
+                })
+            };
+            Request.find().remove({}, function() {
+                saveAll();
+            });
         };
-        Request.find().remove({}, function() {
-            saveAll();
-        });
+        saveServices();
     });
 
     describe('GET /requests', function() {
@@ -88,7 +113,25 @@ describe('Request REST interface', function() {
                         message: 'Error! POST call was not successfull ' + res.statusCode
                     };
                 }
-            })
+            });
+        });
+        it('should deny a invalid service_code', function(done) {
+            var sample_request = __.cloneDeep(requests.sample_request)
+            sample_request.service_code = "0x00";
+            request.post({
+                form: sample_request,
+                url: 'http://localhost:' + options.port + '/requests',
+                json: true
+            }, function(error, res) {
+                if (!error && res.statusCode == 200) {
+                    throw {
+                        message: 'Error! POST call with invalid service_code not denied '
+                    };
+                } else {
+                    assert.ok(true);
+                    done();
+                }
+            });
         });
     });
 
