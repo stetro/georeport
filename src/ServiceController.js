@@ -6,7 +6,6 @@ GET		/services 		index
 POST	/services 		create
 GET		/services/:id 	show
 PUT		/services/:id 	update
-
 DELETE 	/services/:id 	destroy
 */
 

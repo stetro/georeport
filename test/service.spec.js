@@ -6,11 +6,10 @@ var Service = require('../src/models/Service');
 var services = require('../test/data/services.js');
 var __ = require('lodash');
 
-// Connecting to a local test database or creating it on the fly
-mongoose.connect('mongodb://localhost/georeport_test');
 
 var options = {
-    port: 3000
+    port: 3000,
+    db_connect_url: 'mongodb://localhost/georeport_test'
 };
 
 var server = new georeport(options).run();
