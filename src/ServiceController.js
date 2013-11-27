@@ -15,9 +15,6 @@ module.exports = function(server, options) {
 			if (err) {
 				res.json([]);
 			} else {
-				for (s in services) {
-					services[s].service_code = services[s]._id;
-				}
 				res.json(services);
 			}
 		});
@@ -29,7 +26,6 @@ module.exports = function(server, options) {
 			if (err) {
 				res.send(400, err);
 			} else {
-				service.service_code = service._id;
 				res.json(service);
 			}
 		});
@@ -45,7 +41,6 @@ module.exports = function(server, options) {
 				});
 			} else {
 				service.attributes = [];
-				service.service_code = service._id;
 				res.json(service)
 			}
 		});
@@ -61,7 +56,6 @@ module.exports = function(server, options) {
 			} else if (service === null) {
 				res.send(400, "Service not found.");
 			} else {
-				service.service_code = service._id;
 				res.json(service);
 			}
 		});
