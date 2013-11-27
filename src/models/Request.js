@@ -3,12 +3,6 @@ var Schema = mongoose.Schema;
 var Service = require('../models/Service');
 
 var RequestSchema = new Schema({
-    service_request_id: {
-        type: String,
-        required: true,
-        unique: true,
-        default: Date.now
-    },
     service_code: {
         type: String,
         required: true
@@ -57,6 +51,20 @@ var RequestSchema = new Schema({
         type: Date,
         default: Date.now
     }
+});
+
+var service_request_id = RequestSchema.virtual('service_request_id');
+
+service_request_id.get(function() {
+    return this._id.toHexString();
+});
+
+RequestSchema.set('toObject', {
+    virtuals: true
+});
+
+RequestSchema.set('toJSON', {
+    virtuals: true
 });
 
 module.exports = mongoose.model('Request', RequestSchema);

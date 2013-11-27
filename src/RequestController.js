@@ -15,9 +15,6 @@ module.exports = function(server, options) {
 			if (err) {
 				res.json([]);
 			} else {
-				for (s in requests) {
-					requests[s].service_request_id = requests[s]._id;
-				}
 				res.json(requests);
 			}
 		});
@@ -29,7 +26,6 @@ module.exports = function(server, options) {
 			if (err) {
 				res.send(400, err);
 			} else {
-				request.service_request_id = request._id;
 				res.json(request);
 			}
 		});
@@ -45,7 +41,6 @@ module.exports = function(server, options) {
 				});
 			} else {
 				request.attributes = [];
-				request.service_request_id = request._id;
 				res.json(request)
 			}
 		});
@@ -61,7 +56,6 @@ module.exports = function(server, options) {
 			} else if (request === null) {
 				res.send(400, "Request not found.");
 			} else {
-				request.request_code = request._id;
 				res.json(request);
 			}
 		});
