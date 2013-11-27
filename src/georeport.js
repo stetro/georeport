@@ -18,17 +18,25 @@ var GeoReport = module.exports = function(options) {
         __.extend(defaults, options);
     }
 
-    self.server = express();
-    self.server.use(express.bodyParser());
-    
+    self.app = express();
+    self.app.use(express.bodyParser());
+
     mongoose.connect(defaults.db_connect_url);
-    
-    ServiceController(self.server, defaults)
-    RequestController(self.server, defaults)
+
+    ServiceController(self.app, defaults)
+    RequestController(self.app, defaults)
 
     self.run = function() {
+        self.server = require('http').createServer(self.app);
         self.server.listen(defaults.port);
         console.log('Server is running ... localhost:' + defaults.port);
+    };
+
+    self.close = function(done) {
+        self.server.close(function() {
+            done();
+        });
+        console.log('Server is shutting down ...');
     };
 };
 

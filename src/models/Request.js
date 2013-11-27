@@ -4,7 +4,9 @@ var Service = require('../models/Service');
 
 var RequestSchema = new Schema({
     service_request_id: {
-        type: String
+        type: String,
+        required: true,
+        unique: true
     },
     service_code: {
         type: String,

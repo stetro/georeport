@@ -2,8 +2,8 @@ var request = require('request');
 var assert = require('assert');
 var mongoose = require('mongoose');
 var georeport = require('../src/georeport');
-var Service = require('../src/models/Service');
-var services = require('../test/data/services.js');
+var Request = require('../src/models/Request');
+var requests = require('../test/data/requests.js');
 var __ = require('lodash');
 
 
@@ -12,50 +12,45 @@ var options = {
     db_connect_url: 'mongodb://localhost/georeport_test'
 }, server;
 
-
-
-describe('Service REST interface', function() {
-
+describe('Request REST interface', function() {
     before(function() {
         server = new georeport(options);
         server.run();
     });
 
     after(function(done) {
-        Service.remove(function(err) {
+        Request.remove(function(err) {
             mongoose.connection.close();
             server.close(done);
         });
     });
 
     beforeEach(function(done) {
-
-        var total = services.array.length;
-        var array = __.cloneDeep(services.array)
+        var total = requests.array.length;
+        var array = __.cloneDeep(requests.array)
         var result = [];
         var saveAll = function() {
             var doc = array.pop();
-            doc = new Service(doc);
+            doc = new Request(doc);
             doc.save(function(err, saved) {
                 if (err) throw err;
                 if (--total) saveAll();
                 else done();
             })
         };
-        Service.find().remove({}, function() {
+        Request.find().remove({}, function() {
             saveAll();
         });
-
     });
 
-    describe('GET /services', function() {
-        it('should give a list of available services as array', function(done) {
+    describe('GET /requests', function() {
+        it('should give a list of available requests as array', function(done) {
             request.get({
-                url: 'http://localhost:' + options.port + '/services',
+                url: 'http://localhost:' + options.port + '/requests',
                 json: true
             }, function(error, res, body) {
                 if (!error && res.statusCode == 200) {
-                    assert.equal(body.length, 3);
+                    assert.equal(body.length, requests.array.length);
                     done();
                 } else {
                     throw {
@@ -66,16 +61,16 @@ describe('Service REST interface', function() {
         });
     });
 
-    describe('POST /services', function() {
-        it('should add a new service to the database', function(done) {
+    describe('POST /requests', function() {
+        it('should add a new request to the database', function(done) {
             request.post({
-                form: services.sample_service,
-                url: 'http://localhost:' + options.port + '/services',
+                form: requests.sample_request,
+                url: 'http://localhost:' + options.port + '/requests',
                 json: true
             }, function(error, res) {
                 if (!error && res.statusCode == 200) {
                     request.get({
-                        url: 'http://localhost:' + options.port + '/services',
+                        url: 'http://localhost:' + options.port + '/requests',
                         json: true
                     }, function(error, res, body) {
                         if (!error && res.statusCode == 200) {
@@ -97,12 +92,12 @@ describe('Service REST interface', function() {
         });
     });
 
-    describe('GET /services/:id', function() {
-        it('should give one specific service as object', function(done) {
-            Service.findOne({}, function(err, s) {
+    describe('GET /requests/:id', function() {
+        it('should give one specific request as object', function(done) {
+            Request.findOne({}, function(err, s) {
                 if (err) throw err;
                 request.get({
-                    url: 'http://localhost:' + options.port + '/services/' + s._id,
+                    url: 'http://localhost:' + options.port + '/requests/' + s._id,
                     json: true
                 }, function(error, res, body) {
                     if (!error && res.statusCode == 200) {
@@ -119,26 +114,26 @@ describe('Service REST interface', function() {
     });
 
 
-    describe('PUT /services/:id', function() {
-        it('should update one specific service object by calling', function(done) {
-            Service.findOne({}, function(err, oldService) {
+    describe('PUT /requests/:id', function() {
+        it('should update one specific request object by calling', function(done) {
+            Request.findOne({}, function(err, oldRequest) {
                 if (err) throw err;
                 request.put({
-                    url: 'http://localhost:' + options.port + '/services/' + oldService._id,
+                    url: 'http://localhost:' + options.port + '/requests/' + oldRequest._id,
                     json: true,
                     body: {
-                        description: "Test"
+                        description: "TestRequestDescriptionChange"
                     }
                 }, function(error, res, body) {
                     if (!error && res.statusCode == 200) {
                         assert.notEqual(body, undefined);
                         request.get({
-                            url: 'http://localhost:' + options.port + '/services/' + oldService._id,
+                            url: 'http://localhost:' + options.port + '/requests/' + oldRequest._id,
                             json: true
                         }, function(error, res, body) {
                             if (!error && res.statusCode == 200) {
                                 assert.notEqual(body, undefined);
-                                assert.equal(body.description, "Test")
+                                assert.equal(body.description, "TestRequestDescriptionChange")
                                 done();
                             } else {
                                 throw {
@@ -156,21 +151,18 @@ describe('Service REST interface', function() {
         });
     });
 
-    describe('DELETE /services/:id', function() {
-        it('should delete one specific service object by calling', function(done) {
-            Service.findOne({}, function(err, service) {
+    describe('DELETE /requests/:id', function() {
+        it('should delete one specific request object by calling', function(done) {
+            Request.findOne({}, function(err, toDeleteRequest) {
                 if (err) throw err;
                 request.del({
-                    url: 'http://localhost:' + options.port + '/services/' + service._id,
-                    json: true,
-                    body: {
-                        description: "Test"
-                    }
+                    url: 'http://localhost:' + options.port + '/requests/' + toDeleteRequest._id,
+                    json: true
                 }, function(error, res, body) {
                     if (!error && res.statusCode == 200) {
                         assert.notEqual(body, undefined);
                         request.get({
-                            url: 'http://localhost:' + options.port + '/services',
+                            url: 'http://localhost:' + options.port + '/requests',
                             json: true
                         }, function(error, res, body) {
                             if (!error && res.statusCode == 200) {
