@@ -59,6 +59,11 @@ var RequestSchema = new Schema({
     timestamp: {
         type: Date,
         default: Date.now
+    },
+    status: {
+        type: String,
+        default: "open",
+        required: true
     }
 });
 

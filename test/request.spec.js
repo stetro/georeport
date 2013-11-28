@@ -84,6 +84,25 @@ describe('Request REST interface', function() {
                 }
             });
         });
+        it('should give a list of requests as array at a given area', function(done) {
+            request.get({
+                url: 'http://localhost:' + options.port + '/requests',
+                json: true,
+                qs: {
+                    start_date: "2013-10-12T12:28:19.993Z",
+                    end_date: "2013-10-12T14:28:19.993Z"
+                }
+            }, function(error, res, body) {
+                if (!error && res.statusCode == 200) {
+                    assert.equal(body.length, 1);
+                    done();
+                } else {
+                    throw {
+                        message: 'Error! GET call was not successfull ' + res.statusCode
+                    };
+                }
+            });
+        });
     });
 
     describe('POST /requests', function() {
