@@ -10,27 +10,28 @@ PUT		/requests/:id 	update
 DELETE 	/requests/:id 	destroy
 */
 
-var iso8601Regex = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
+var iso8601TimeRegex = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
 
 module.exports = function(server, options) {
 
 	server.get(options.accesspoint + 'requests', function(req, res) {
 		var query = {};
-		if (req.query.start_date !== undefined && req.query.start_date.match(iso8601Regex)) {
-			if (req.query.end_date !== undefined && req.query.end_date.match(iso8601Regex)) {
+		if (req.query.start_date !== undefined && req.query.start_date.match(iso8601TimeRegex)) {
+			if (req.query.end_date !== undefined && req.query.end_date.match(iso8601TimeRegex)) {
 				query.timestamp = {
 					"$gte": req.query.start_date,
 					"$lt": req.query.end_date
 				};
-
 			} else {
 				query.timestamp = {
 					"$gte": req.query.start_date
 				};
 			}
-
 		}
-		if (req.query.start_lat !== undefined && req.query.start_lng !== undefined && req.query.end_lat !== undefined && req.query.end_lng !== undefined) {
+		if (req.query.start_lat !== undefined &&
+			req.query.start_lng !== undefined &&
+			req.query.end_lat !== undefined &&
+			req.query.end_lng !== undefined) {
 			query.lat = {
 				"$gte": req.query.end_lat,
 				"$lt": req.query.start_lat
@@ -42,7 +43,7 @@ module.exports = function(server, options) {
 		}
 		Request.find(query, function(err, requests) {
 			if (err) {
-				res.json([]);
+				res.send(400, err);
 			} else {
 				res.json(requests);
 			}

@@ -12,7 +12,8 @@ var GeoReport = module.exports = function(options) {
         port: 3000,
         accesspoint: '/',
         db_connect_url: 'mongodb://localhost/georeport',
-        static_dir: __dirname + '/'
+        static_dir: __dirname + '/',
+        backend_dir: __dirname + '/backend/'
     };
 
     if (__.isObject(options)) {
@@ -28,7 +29,8 @@ var GeoReport = module.exports = function(options) {
     ServiceController(self.app, defaults)
     RequestController(self.app, defaults)
 
-    self.app.use(express.static(defaults.static_dir));
+    self.app.use('/phone', express.static(defaults.static_dir));
+    self.app.use('/backend', express.static(defaults.backend_dir))
 
     self.run = function() {
         self.server = require('http').createServer(self.app);
@@ -46,7 +48,8 @@ if (require.main === module) {
     var server = new GeoReport({
         port: 3000,
         db_connect_url: 'mongodb://localhost/georeport',
-        static_dir: __dirname + '/../../reportamoose/phone/app/'
+        static_dir: __dirname + '/../../reportamoose/phone/app/',
+        backend_dir: __dirname + '/../../reportamoose/backend/app/',
     });
     server.run();
 }
