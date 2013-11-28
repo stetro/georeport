@@ -22,12 +22,23 @@ module.exports = function(server, options) {
 					"$gte": req.query.start_date,
 					"$lt": req.query.end_date
 				};
-				
+
 			} else {
 				query.timestamp = {
 					"$gte": req.query.start_date
 				};
 			}
+
+		}
+		if (req.query.start_lat !== undefined && req.query.start_lng !== undefined && req.query.end_lat !== undefined && req.query.end_lng !== undefined) {
+			query.lat = {
+				"$gte": req.query.end_lat,
+				"$lt": req.query.start_lat
+			};
+			query.lng = {
+				"$gte": req.query.start_lng,
+				"$lt": req.query.end_lng
+			};
 		}
 		Request.find(query, function(err, requests) {
 			if (err) {

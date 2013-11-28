@@ -84,7 +84,7 @@ describe('Request REST interface', function() {
                 }
             });
         });
-        it('should give a list of requests as array at a given area', function(done) {
+        it('should give a list of requests as array at a given time area', function(done) {
             request.get({
                 url: 'http://localhost:' + options.port + '/requests',
                 json: true,
@@ -95,6 +95,27 @@ describe('Request REST interface', function() {
             }, function(error, res, body) {
                 if (!error && res.statusCode == 200) {
                     assert.equal(body.length, 1);
+                    done();
+                } else {
+                    throw {
+                        message: 'Error! GET call was not successfull ' + res.statusCode
+                    };
+                }
+            });
+        });
+        it('should give a list of requests as array at a given location area', function(done) {
+            request.get({
+                url: 'http://localhost:' + options.port + '/requests',
+                json: true,
+                qs: {
+                    start_lat: 61.501755,
+                    start_lng: 23.752828,
+                    end_lat: 61.496164,
+                    end_lng: 23.766689
+                }
+            }, function(error, res, body) {
+                if (!error && res.statusCode == 200) {
+                    assert.equal(body.length, 2);
                     done();
                 } else {
                     throw {
