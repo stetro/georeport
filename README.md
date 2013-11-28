@@ -11,6 +11,7 @@ Status
 ------
 
 * `/services` resource base finished
+* `/requests` resource base finished
 
 General constraints
 -------------------
