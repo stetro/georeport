@@ -124,6 +124,24 @@ describe('Request REST interface', function() {
                 }
             });
         });
+        it('should give a list of requests as array with a specific status', function(done) {
+            request.get({
+                url: 'http://localhost:' + options.port + '/requests',
+                json: true,
+                qs: {
+                    status: 'open'
+                }
+            }, function(error, res, body) {
+                if (!error && res.statusCode == 200) {
+                    assert.equal(body.length, 2);
+                    done();
+                } else {
+                    throw {
+                        message: 'Error! GET call was not successfull ' + res.statusCode
+                    };
+                }
+            });
+        });
     });
 
     describe('POST /requests', function() {

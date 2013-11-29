@@ -41,6 +41,9 @@ module.exports = function(server, options) {
 				"$lt": req.query.end_lng
 			};
 		}
+		if(req.query.status !== undefined){
+			query.status = req.query.status;
+		}
 		Request.find(query, function(err, requests) {
 			if (err) {
 				res.send(400, err);
