@@ -31,5 +31,6 @@
     "escomplex-ast-moz": "~0.1.5",
     "escomplex": "~0.2.1",
     "esprima": "~1.0.4"
-  }
+  },
+  "license": "MIT"
 }
